@@ -141,3 +141,44 @@ button:hover {
     transform: translateY(-10px);
   }
 }
+
+/* Contenedor con borde para el carrito */
+.carrito-box {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 25px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Separación entre los items del carrito */
+.item-carrito {
+  margin-bottom: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Total del carrito */
+.carrito-total {
+  font-size: 18px;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* Botón vaciar carrito */
+.btn-vaciar {
+  background-color: #e74c3c;
+  margin-top: 20px;
+}
+
+.btn-vaciar:hover {
+  background-color: #c0392b;
+}
