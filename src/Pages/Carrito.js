@@ -1,13 +1,13 @@
 import React from "react";
 
-function Carrito({ carrito }) {
+function Carrito({ carrito, vaciarCarrito }) {
   return (
     <div className="container">
       <h2>Carrito de Compras</h2>
       {carrito.length === 0 ? (
         <p>El carrito está vacío.</p>
       ) : (
-        <div>
+        <>
           {carrito.map((item, index) => (
             <div className="card" key={index}>
               <p>
@@ -15,7 +15,12 @@ function Carrito({ carrito }) {
               </p>
             </div>
           ))}
-        </div>
+          <div style={{ textAlign: "center", marginTop: "30px" }}>
+            <button onClick={vaciarCarrito} className="btn-vaciar">
+              Vaciar Carrito
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

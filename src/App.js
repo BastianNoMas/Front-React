@@ -12,17 +12,19 @@ function App() {
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
     setMensaje(`✅ ${producto.nombre} ha sido agregado al carrito de compras`);
+    setTimeout(() => setMensaje(""), 3000);
+  };
 
-    setTimeout(() => {
-      setMensaje("");
-    }, 3000); // mensaje desaparece después de 3 segundos
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    setMensaje("🗑️ Carrito vaciado correctamente");
+    setTimeout(() => setMensaje(""), 3000);
   };
 
   return (
     <Router>
       <Navbar />
 
-      {/* Mostrar mensaje si existe */}
       {mensaje && <div className="mensaje-alerta">{mensaje}</div>}
 
       <Routes>
@@ -30,9 +32,13 @@ function App() {
           path="/"
           element={<Home agregarAlCarrito={agregarAlCarrito} />}
         />
-        <Route path="/carrito" element={<Carrito carrito={carrito} />} />
+        <Route
+          path="/carrito"
+          element={<Carrito carrito={carrito} vaciarCarrito={vaciarCarrito} />}
+        />
       </Routes>
     </Router>
   );
 }
+
 export default App;
