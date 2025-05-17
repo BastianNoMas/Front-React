@@ -1,6 +1,7 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import axios from "axios";
 import Home from "./Pages/Home";
 import Carrito from "./Pages/Carrito";
 import Navbar from "./Componentes/Navbar";
@@ -8,6 +9,7 @@ import Navbar from "./Componentes/Navbar";
 function App() {
   const [carrito, setCarrito] = useState([]);
   const [mensaje, setMensaje] = useState("");
+  const [valorDolar, setValorDolar] = useState(null);
 
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
@@ -20,6 +22,17 @@ function App() {
     setMensaje("🗑️ Carrito vaciado correctamente");
     setTimeout(() => setMensaje(""), 3000);
   };
+
+  useEffect(() => {
+    axios.get("https://mindicador.cl/api/dolar")
+      .then((response) => {
+        const valor = response.data.serie[0].valor;
+        setValorDolar(valor);
+      })
+      .catch((error) => {
+        console.error("Error al obtener el valor del dólar", error);
+      });
+  }, []);
 
   return (
     <Router>
@@ -37,6 +50,24 @@ function App() {
           element={<Carrito carrito={carrito} vaciarCarrito={vaciarCarrito} />}
         />
       </Routes>
+
+      <footer style={{
+        marginTop: "40px",
+        padding: "15px",
+        textAlign: "center",
+        backgroundColor: "#f1f1f1",
+        color: "#333",
+        borderTop: "1px solid #ccc",
+        fontWeight: "bold"
+      }}>
+        💵 Valor del dólar hoy:{" "}
+        {valorDolar
+          ? `$${valorDolar.toLocaleString("es-CL", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })} CLP`
+          : "Cargando..."}
+      </footer>
     </Router>
   );
 }
