@@ -25,12 +25,24 @@ function Carrito({ carrito, vaciarCarrito }) {
       ) : (
         <div className="carrito-box">
           {carrito.map((item, index) => (
-            <div className="card item-carrito" key={index}>
-              <p>
-                {item.nombre} - ${Number(item.precio).toLocaleString("es-CL", {
-                  minimumFractionDigits: 2,
-                })}
-              </p>
+            <div className="card item-carrito" key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              {item.imagen && (
+                <img
+                  src={item.imagen}
+                  alt={item.nombre}
+                  style={{
+                    width: '50px', // Ancho pequeño
+                    height: '50px', // Alto pequeño
+                    objectFit: 'cover', // Para que la imagen se ajuste bien sin distorsionarse
+                    marginRight: '10px', // Espacio entre la imagen y el texto
+                    borderRadius: '4px' // Bordes redondeados opcionales
+                  }}
+                />
+              )}
+              <div>
+                <span>{item.nombre}</span> - <span>${Number(item.precio).toLocaleString("es-CL")} CLP</span>
+                {/* Puedes quitar los minimumFractionDigits si prefieres no mostrar centavos para precios enteros */}
+              </div>
             </div>
           ))}
 
