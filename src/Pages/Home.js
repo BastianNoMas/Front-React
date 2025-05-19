@@ -27,6 +27,9 @@ function Home({ agregarAlCarrito }) {
       <div className="product-grid">
         {productos.map((producto) => (
           <div className="card" key={producto.id}>
+              {producto.imagen && (
+              <img src={producto.imagen} alt={producto.nombre} style={{ maxWidth: '100%', height: 'auto', marginBottom: '10px' }} />
+            )}
             <h3>{producto.nombre}</h3>
             <p>Precio: ${producto.precio.toLocaleString("es-CL")} CLP</p>
             {valorDolar && (
