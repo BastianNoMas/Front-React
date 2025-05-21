@@ -11,6 +11,19 @@ function App() {
   const [mensaje, setMensaje] = useState("");
   const [valorDolar, setValorDolar] = useState(null);
 
+  // Cargar carrito desde localStorage al iniciar
+  useEffect(() => {
+    const carritoGuardado = localStorage.getItem("carrito");
+    if (carritoGuardado) {
+      setCarrito(JSON.parse(carritoGuardado));
+    }
+  }, []);
+
+  // Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
   const agregarAlCarrito = (producto) => {
     setCarrito([...carrito, producto]);
     setMensaje(`✅ ${producto.nombre} ha sido agregado al carrito de compras`);
@@ -19,6 +32,7 @@ function App() {
 
   const vaciarCarrito = () => {
     setCarrito([]);
+    localStorage.removeItem("carrito");
     setMensaje("🗑️ Carrito vaciado correctamente");
     setTimeout(() => setMensaje(""), 3000);
   };
@@ -47,7 +61,7 @@ function App() {
         />
         <Route
           path="/carrito"
-          element={<Carrito carrito={carrito} vaciarCarrito={vaciarCarrito} />}
+          element={<Carrito carrito={carrito} setCarrito={setCarrito} vaciarCarrito={vaciarCarrito} />}
         />
       </Routes>
 
