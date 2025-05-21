@@ -38,7 +38,8 @@ function App() {
   };
 
   useEffect(() => {
-    axios.get("https://mindicador.cl/api/dolar")
+    axios
+      .get("https://mindicador.cl/api/dolar")
       .then((response) => {
         const valor = response.data.serie[0].valor;
         setValorDolar(valor);
@@ -61,24 +62,32 @@ function App() {
         />
         <Route
           path="/carrito"
-          element={<Carrito carrito={carrito} setCarrito={setCarrito} vaciarCarrito={vaciarCarrito} />}
+          element={
+            <Carrito
+              carrito={carrito}
+              setCarrito={setCarrito}
+              vaciarCarrito={vaciarCarrito}
+            />
+          }
         />
       </Routes>
 
-      <footer style={{
-        marginTop: "40px",
-        padding: "15px",
-        textAlign: "center",
-        backgroundColor: "#f1f1f1",
-        color: "#333",
-        borderTop: "1px solid #ccc",
-        fontWeight: "bold"
-      }}>
+      <footer
+        style={{
+          marginTop: "40px",
+          padding: "15px",
+          textAlign: "center",
+          backgroundColor: "#f1f1f1",
+          color: "#333",
+          borderTop: "1px solid #ccc",
+          fontWeight: "bold",
+        }}
+      >
         💵 Valor del dólar hoy:{" "}
         {valorDolar
           ? `$${valorDolar.toLocaleString("es-CL", {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2
+              maximumFractionDigits: 2,
             })} CLP`
           : "Cargando..."}
       </footer>
