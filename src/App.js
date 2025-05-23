@@ -5,6 +5,7 @@ import axios from "axios";
 import Home from "./Pages/Home";
 import Carrito from "./Pages/Carrito";
 import Navbar from "./Componentes/Navbar";
+import Contacto from "./Pages/Contacto";
 
 function App() {
   const [carrito, setCarrito] = useState([]);
@@ -69,6 +70,10 @@ function App() {
               vaciarCarrito={vaciarCarrito}
             />
           }
+        />
+        <Route
+          path="/contacto"
+          element={<Contacto />}
         />
       </Routes>
 
