@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: react_frontend_app
+    ports:
+      # Map port 8080 on your host to port 80 in the container
+      - "8089:80"
+    networks:
+      app_net:
+        # Assign a static IP address to this container within the app_net network
+        ipv4_address: 172.28.0.10
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/24 # Define the subnet for your custom network
