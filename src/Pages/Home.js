@@ -7,7 +7,7 @@ function Home({ agregarAlCarrito }) {
 
   useEffect(() => {
     // Petición a tu backend
-    axios.get('http://192.168.1.8:3000/api/productos')
+    axios.get('http://192.168.1.8:3000/api/productos') // al momento de presentar se cambia la ip .
       .then(response => setProductos(response.data))
       .catch(error => console.error('Error al obtener productos:', error));
 

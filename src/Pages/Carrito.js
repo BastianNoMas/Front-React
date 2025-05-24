@@ -47,9 +47,7 @@ function Carrito({ carrito, vaciarCarrito }) {
           ))}
 
           <div className="carrito-total" style={{ marginTop: "15px" }}>
-            <strong>Total:</strong> ${totalCLP.toLocaleString("es-CL", {
-              minimumFractionDigits: 2,
-            })}{" "}
+            <strong>Total:</strong> ${totalCLP.toLocaleString("es-CL", { maximumFractionDigits: 0 })}{" "}
             CLP
             {totalUSD && (
               <div>
