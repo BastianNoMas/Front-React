@@ -10,7 +10,7 @@ const ConfirmacionPago = () => {
       try {
         const productosComprados = location.state?.productos || [];
         if (productosComprados.length > 0) {
-          const response = await fetch('/api/descontar-stock', {
+          const response = await fetch('http://localhost:3010/api/descontar-stock', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
