@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import Carrito from "./Pages/Carrito";
 import Navbar from "./Componentes/Navbar";
 import Contacto from "./Pages/Contacto";
+import ConfirmacionPago from './Pages/ConfirmacionPago';
 
 function App() {
   const [carrito, setCarrito] = useState([]);
@@ -75,6 +76,7 @@ function App() {
           path="/contacto"
           element={<Contacto />}
         />
+         <Route path="/confirmacion-pago" element={<ConfirmacionPago />} />
       </Routes>
 
       <footer
