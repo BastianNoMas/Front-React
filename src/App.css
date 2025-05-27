@@ -182,3 +182,40 @@ button:hover {
 .btn-vaciar:hover {
   background-color: #c0392b;
 }
+
+
+/* Estilo para centrar y enmarcar el formulario */
+.form-box {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del formulario de contacto */
+.form-contacto div {
+  margin-bottom: 20px;
+}
+
+.form-contacto label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.form-contacto input,
+.form-contacto textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  resize: vertical;
+}
+
+.form-contacto textarea {
+  min-height: 100px;
+}

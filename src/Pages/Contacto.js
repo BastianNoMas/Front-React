@@ -30,7 +30,7 @@ function Contacto() {
   };
 
   return (
-    <div className="container">
+    <div className="container form-box">
       <h2>Contacto con un Vendedor</h2>
       <form onSubmit={handleSubmit} className="form-contacto">
         <div>
