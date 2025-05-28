@@ -1,3 +1,5 @@
+// ConfirmacionPago.tsx
+
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -25,6 +27,7 @@ const ConfirmacionPago = () => {
           setConfirmado(true);
 
           const productosComprados = location.state?.productos || [];
+          console.log('Productos comprados:', productosComprados);
 
           if (productosComprados.length > 0) {
             const stockRes = await fetch('http://localhost:3010/api/descontar-stock', {
@@ -33,7 +36,10 @@ const ConfirmacionPago = () => {
               body: JSON.stringify({ productos: productosComprados }),
             });
 
-            if (!stockRes.ok) throw new Error('Error al descontar el stock');
+            if (!stockRes.ok) {
+              const errorData = await stockRes.json();
+              throw new Error(errorData.mensaje || 'Error al descontar el stock');
+            }
 
             console.log('Stock descontado correctamente');
           }
@@ -42,7 +48,7 @@ const ConfirmacionPago = () => {
         }
       } catch (error) {
         console.error('Error al confirmar el pago:', error);
-        setMensaje('Error al confirmar el pago');
+        setMensaje(`Error al confirmar el pago: ${error instanceof Error ? error.message : 'Error desconocido'}`);
       }
     };
 
