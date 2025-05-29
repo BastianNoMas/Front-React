@@ -34,6 +34,12 @@ function Carrito({ carrito, vaciarCarrito }) {
       const sessionId = `sesion_${Math.random().toString(36).substring(2, 15)}`;
       const returnUrl = `${window.location.origin}/confirmacion-pago`;
 
+      // Guardar el carrito actual en localStorage antes de redirigir
+      // Asegúrate que los productos en 'carrito' tengan 'id'
+      localStorage.setItem('pendingPurchaseCart', JSON.stringify(carrito));
+      // console.log('Carrito guardado para la compra:', carrito);
+
+
       // Llamar al endpoint de creación de transacción
       const response = await axios.post("http://localhost:3010/api/webpay/create", {
         buyOrder,
@@ -41,6 +47,7 @@ function Carrito({ carrito, vaciarCarrito }) {
         amount: totalCLP,
         returnUrl,
       });
+
 
       // Redirigir al usuario a WebPay
       window.location.href = `${response.data.url}?token_ws=${response.data.token}`;

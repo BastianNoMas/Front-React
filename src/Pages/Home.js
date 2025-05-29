@@ -8,7 +8,15 @@ function Home({ agregarAlCarrito }) {
   useEffect(() => {
     // Petición a tu backend
     axios.get('http://localhost:3000/api/productos') // al momento de presentar se cambia la ip .
-      .then(response => setProductos(response.data))
+      .then(response => {
+        // Asegurarnos de que cada producto tenga una propiedad 'id'.
+        // Si viene 'codigo' del backend y no 'id', lo mapeamos.
+        const productosConId = response.data.map(producto => ({
+          ...producto,
+          id: producto.id || producto.codigo, // Usar producto.id si existe, sino producto.codigo
+        }));
+        setProductos(productosConId);
+      })
       .catch(error => console.error('Error al obtener productos:', error));
 
     // Petición a la API externa
@@ -26,7 +34,9 @@ function Home({ agregarAlCarrito }) {
       
       <div className="product-grid">
         {productos.map((producto) => (
-          <div className="card" key={producto.id}>
+          // Ahora podemos usar producto.id con seguridad para el key,
+          // ya que nos aseguramos de que exista.
+          <div className="card" key={producto.id}> 
               {producto.imagen && (
               <img src={producto.imagen} alt={producto.nombre} style={{ maxWidth: '100%', height: 'auto', marginBottom: '10px' }} />
             )}

@@ -15,6 +15,7 @@ const ConfirmacionPago = () => {
 
       if (!token) {
         setMensaje('Token no proporcionado');
+        localStorage.removeItem('pendingPurchaseCart'); // Limpiar si no hay token
         return;
       }
 
@@ -25,26 +26,55 @@ const ConfirmacionPago = () => {
         if (data.response && data.response.status === 'AUTHORIZED') {
           setMensaje('¡Compra realizada exitosamente!');
           setConfirmado(true);
+          localStorage.setItem('paymentProcessed', 'true'); // Señal para App.js
 
-          const productosComprados = location.state?.productos || [];
-          console.log('Productos comprados:', productosComprados);
+          // Recuperar el carrito desde localStorage
+          const pendingCartJSON = localStorage.getItem('pendingPurchaseCart');
+          localStorage.removeItem('pendingPurchaseCart'); // Limpiar el carrito pendiente
 
-          if (productosComprados.length > 0) {
-            const stockRes = await fetch('http://localhost:3010/api/descontar-stock', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ productos: productosComprados }),
-            });
-
-            if (!stockRes.ok) {
-              const errorData = await stockRes.json();
-              throw new Error(errorData.mensaje || 'Error al descontar el stock');
+          if (pendingCartJSON) {
+            let productosComprados = [];
+            try {
+              productosComprados = JSON.parse(pendingCartJSON);
+            } catch (e) {
+              console.error("Error al parsear pendingPurchaseCart desde localStorage", e);
+              setMensaje(prev => `${prev} (Advertencia: no se pudo procesar la lista de productos para el stock)`);
             }
+            
+            console.log('Productos comprados (desde localStorage):', productosComprados);
 
-            console.log('Stock descontado correctamente');
+            if (productosComprados.length > 0) {
+              try {
+                const stockRes = await fetch('http://localhost:3003/api/stock/descontar-stock', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  // Asegúrate que tu backend espera un objeto { productos: [...] }
+                  // y que cada producto en el array tiene un 'id'.
+                  body: JSON.stringify({ productos: productosComprados }),
+                });
+
+                if (!stockRes.ok) {
+                  const errorData = await stockRes.json();
+                  const stockErrorMessage = errorData.mensaje || 'Error al descontar el stock';
+                  console.error('Error al descontar el stock:', stockErrorMessage);
+                  setMensaje(prev => `${prev}. Problema al actualizar stock: ${stockErrorMessage}`);
+                } else {
+                  console.log('Stock descontado correctamente');
+                  // Opcional: setMensaje(prev => `${prev} y el stock ha sido actualizado.`);
+                }
+              } catch (stockError) {
+                console.error('Error en la llamada para descontar el stock:', stockError);
+                const stockErrorMessage = stockError instanceof Error ? stockError.message : 'Error desconocido en descuento de stock';
+                setMensaje(prev => `${prev}. Problema al actualizar stock: ${stockErrorMessage}`);
+              }
+            }
+          } else {
+            console.warn('No se encontró el carrito pendiente en localStorage para descontar stock, pero el pago fue exitoso.');
+            setMensaje(prev => `${prev} (Advertencia: no se encontró información del carrito para actualizar stock)`);
           }
         } else {
-          setMensaje('El pago no fue autorizado');
+          setMensaje(data.message || 'El pago no fue autorizado por Webpay.');
+          localStorage.removeItem('pendingPurchaseCart'); // Limpiar en caso de fallo de pago
         }
       } catch (error) {
         console.error('Error al confirmar el pago:', error);
@@ -53,7 +83,8 @@ const ConfirmacionPago = () => {
     };
 
     confirmarPago();
-  }, [location.search]);
+  // location.search es una dependencia adecuada. location es de useLocation().
+  }, [location]); 
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>

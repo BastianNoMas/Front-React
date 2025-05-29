@@ -1,6 +1,6 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import Home from "./Pages/Home";
 import Carrito from "./Pages/Carrito";
@@ -8,8 +8,9 @@ import Navbar from "./Componentes/Navbar";
 import Contacto from "./Pages/Contacto";
 import ConfirmacionPago from './Pages/ConfirmacionPago';
 
-function App() {
+function AppInternal() {
   const [carrito, setCarrito] = useState([]);
+  const location = useLocation(); // Para el efecto de limpieza del carrito
   const [mensaje, setMensaje] = useState("");
   const [valorDolar, setValorDolar] = useState(null);
 
@@ -17,7 +18,12 @@ function App() {
   useEffect(() => {
     const carritoGuardado = localStorage.getItem("carrito");
     if (carritoGuardado) {
-      setCarrito(JSON.parse(carritoGuardado));
+      try {
+        setCarrito(JSON.parse(carritoGuardado));
+      } catch (e) {
+        console.error("Error al parsear el carrito desde localStorage", e);
+        localStorage.removeItem("carrito"); // Limpiar dato corrupto
+      }
     }
   }, []);
 
@@ -26,18 +32,39 @@ function App() {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
+  // useCallback para estabilizar la referencia de la función si se pasa como dependencia
+  const vaciarCarritoHandler = useCallback(() => {
+    setCarrito([]);
+    // localStorage.removeItem("carrito"); // El useEffect [carrito] lo actualizará a []
+                                         // Opcionalmente, para remoción inmediata:
+    localStorage.removeItem("carrito"); 
+    setMensaje("🗑️ Carrito vaciado correctamente");
+    setTimeout(() => setMensaje(""), 3000);
+  }, []); // No hay dependencias, por lo que es estable
+
   const agregarAlCarrito = (producto) => {
+    if (!producto.id) {
+      console.error("Intento de agregar producto sin ID:", producto);
+      setMensaje(`❌ Error: El producto "${producto.nombre}" no tiene un ID y no puede ser agregado.`);
+      setTimeout(() => setMensaje(""), 4000);
+      return;
+    }
     setCarrito([...carrito, producto]);
     setMensaje(`✅ ${producto.nombre} ha sido agregado al carrito de compras`);
     setTimeout(() => setMensaje(""), 3000);
   };
 
-  const vaciarCarrito = () => {
-    setCarrito([]);
-    localStorage.removeItem("carrito");
-    setMensaje("🗑️ Carrito vaciado correctamente");
-    setTimeout(() => setMensaje(""), 3000);
-  };
+  // Efecto para verificar pago exitoso y limpiar carrito
+  useEffect(() => {
+    const paymentProcessedFlag = localStorage.getItem('paymentProcessed');
+    if (paymentProcessedFlag === 'true') {
+      if (carrito.length > 0) {
+        console.log('Pago procesado detectado. Vaciando carrito.');
+        vaciarCarritoHandler();
+      }
+      localStorage.removeItem('paymentProcessed'); // Limpiar la señal
+    }
+  }, [location.pathname, carrito.length, vaciarCarritoHandler]);
 
   useEffect(() => {
     axios
@@ -52,7 +79,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <>
       <Navbar />
 
       {mensaje && <div className="mensaje-alerta">{mensaje}</div>}
@@ -67,8 +94,7 @@ function App() {
           element={
             <Carrito
               carrito={carrito}
-              setCarrito={setCarrito}
-              vaciarCarrito={vaciarCarrito}
+              vaciarCarrito={vaciarCarritoHandler}
             />
           }
         />
@@ -98,8 +124,15 @@ function App() {
             })} CLP`
           : "Cargando..."}
       </footer>
-    </Router>
+    </>
   );
 }
 
+function App() {
+  return (
+    <Router>
+      <AppInternal />
+    </Router>
+  );
+}
 export default App;
