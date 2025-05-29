@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import emailjs from "@emailjs/browser";
 
 function Contacto() {
   const [form, setForm] = useState({
@@ -14,19 +14,43 @@ function Contacto() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setEnviado(false);
 
-    // Aquí puedes enviar los datos al backend si tienes un endpoint
-    // Ejemplo: await axios.post("http://TU_BACKEND/api/contacto", form);
+    const serviceID = "service_t9jpsm5";
+    const templateToMeID = "template_xetmhf1";
+    const templateAutoReplyID = "template_kwt9tvc";
+    const publicKey = "vZ5IJvUyNisgr_NPv";
 
-    // Simulación de envío exitoso
-    setTimeout(() => {
-      setEnviado(true);
-      setForm({ nombre: "", email: "", mensaje: "" });
-    }, 1000);
+    const templateParams = {
+      name: form.nombre,
+      email: form.email,
+      message: form.mensaje,
+    };
+
+    // Enviar a ti
+    emailjs.send(serviceID, templateToMeID, templateParams, publicKey)
+      .then(() => {
+        console.log("Mensaje enviado a ti ✅");
+
+        // Auto-reply al usuario
+        emailjs.send(serviceID, templateAutoReplyID, templateParams, publicKey)
+          .then(() => {
+            console.log("Auto-reply enviado ✅");
+            setEnviado(true);
+            setForm({ nombre: "", email: "", mensaje: "" });
+          })
+          .catch((error) => {
+            console.error("Error en auto-reply:", error);
+            setError("Error al enviar la respuesta automática.");
+          });
+      })
+      .catch((error) => {
+        console.error("Error al enviarte el mensaje:", error);
+        setError("Error al enviar el mensaje.");
+      });
   };
 
   return (
