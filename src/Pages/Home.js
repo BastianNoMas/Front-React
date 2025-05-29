@@ -28,6 +28,37 @@ function Home({ agregarAlCarrito }) {
       .catch(error => console.error('Error al obtener el valor del dólar:', error));
   }, []);
 
+  const handleAgregarAlCarritoConValidacion = async (producto) => {
+    if (!producto.id) {
+      alert('El producto no tiene un ID válido para verificar el stock.');
+      return;
+    }
+
+    try {
+      // 1. Validar stock llamando a tu API backend
+      // Usamos producto.id, que ya mapeaste para que sea el 'codigo' del stock.
+      // Asegúrate que el puerto y la ruta base sean correctos para tu API de stock.
+      // Basado en ConfirmacionPago.js, el API de stock podría estar en el puerto 3003.
+      const response = await axios.get(`http://localhost:3003/api/stock/validar/${producto.id}`);
+
+      if (response.data && response.data.cantidad > 0) {
+        // 2. Si hay stock, llamar a la función original para agregar al carrito
+        agregarAlCarrito(producto); // Esta función ya muestra su propio mensaje de éxito
+        // alert(`${producto.nombre} ha sido agregado al carrito.`); // Redundante si agregarAlCarrito ya notifica
+      } else {
+        // El producto existe en la tabla de stock, pero la cantidad es 0 o no se encontró cantidad
+        alert(`Lo sentimos, ${producto.nombre} está actualmente fuera de stock.`);
+      }
+    } catch (error) {
+      console.error('Error al validar stock:', error);
+      if (error.response && error.response.status === 404) {
+        alert(`El producto ${producto.nombre} no se encontró en nuestro inventario o no tiene stock registrado.`);
+      } else {
+        alert('No se pudo verificar el stock del producto en este momento. Por favor, inténtalo más tarde.');
+      }
+    }
+  };
+
   return (
     <div className="container">
       <h2>Catálogo</h2>
@@ -45,7 +76,7 @@ function Home({ agregarAlCarrito }) {
             {valorDolar && (
               <p>USD aprox: ${(producto.precio / valorDolar).toFixed(2)} USD</p>
             )}
-            <button onClick={() => agregarAlCarrito(producto)}>
+            <button onClick={() => handleAgregarAlCarritoConValidacion(producto)}>
               Agregar al carrito
             </button>
           </div>
