@@ -1,70 +1,115 @@
-# Getting Started with Create React App
+# Ferremas - Frontend React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descripción
 
-## Available Scripts
+**Ferremas** es una aplicación web para la gestión y compra de productos de ferretería. Permite a los usuarios buscar productos, agregarlos a un carrito de compras persistente, consultar stock en tiempo real, realizar pagos y contactar a un vendedor.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Características
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Catálogo de productos** con búsqueda por nombre.
+- **Carrito de compras** persistente usando `localStorage`.
+- **Consulta de stock** en el backend antes de agregar productos al carrito.
+- **Conversión de precios** a dólares usando una API externa.
+- **Formulario de contacto** para enviar mensajes a un vendedor.
+- **Integración con WebPay** para pagos (simulado).
+- **Diseño responsive** y moderno.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## Instalación
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/tuusuario/ferremas.git
+   cd Ferremas/Front-React
+   ```
 
-### `npm run build`
+2. **Instala las dependencias:**
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Configura las variables de entorno** si tu backend requiere configuración especial.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. **Inicia la aplicación:**
+   ```bash
+   npm start
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Estructura de Carpetas
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+src/
+  ├── App.js
+  ├── App.css
+  ├── Componentes/
+  │     └── Navbar.js
+  ├── Pages/
+  │     ├── Home.js
+  │     ├── Carrito.js
+  │     ├── Contacto.js
+  │     └── ConfirmacionPago.js
+  └── ...
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Principales Componentes
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Navbar:** Barra de navegación con enlaces y buscador.
+- **Home:** Muestra los productos y permite buscar.
+- **Carrito:** Visualiza y gestiona los productos seleccionados.
+- **Contacto:** Formulario para contactar a un vendedor.
+- **ConfirmacionPago:** Página de confirmación tras el pago.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Funcionalidades Técnicas
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Búsqueda:**  
+  El buscador en el navbar redirige a la página principal con el término de búsqueda en la URL. `Home.js` consulta la API del backend usando ese término.
 
-### Code Splitting
+- **Carrito Persistente:**  
+  El carrito se guarda en `localStorage` y se sincroniza automáticamente.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Consulta de Stock:**  
+  Antes de agregar un producto al carrito, se consulta el stock en el backend.
 
-### Analyzing the Bundle Size
+- **Conversión de Moneda:**  
+  El valor del dólar se obtiene de [mindicador.cl](https://mindicador.cl/) y se muestra en el footer.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- **Formulario de Contacto:**  
+  Permite enviar mensajes a un vendedor (puedes conectar con tu backend o usar EmailJS).
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Personalización
 
-### Advanced Configuration
+- Cambia la URL del backend en los archivos donde se hace consulta a la API (`Home.js`, `Carrito.js`, etc.).
+- Personaliza los estilos en [`src/App.css`](src/App.css).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## Dependencias
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- React
+- React Router DOM
+- Axios
+- EmailJS (opcional, para el formulario de contacto)
 
-### `npm run build` fails to minify
+Instala con:
+```bash
+npm install react-router-dom axios @emailjs/browser
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## Notas
+
+- Asegúrate de que el backend esté corriendo y acepte peticiones desde el frontend.
+- Si usas rutas diferentes o necesitas autenticación, ajusta los endpoints en los componentes correspondientes.
+- Puedes agregar más páginas o funcionalidades según tus necesidades.
